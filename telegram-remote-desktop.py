@@ -23,7 +23,7 @@ class telegramBOT:
         buttons = [[KeyboardButton("⚠ Screen status")], [KeyboardButton("🔒 Lock screen")], [KeyboardButton("📸 Take screenshot")],
                    [KeyboardButton("✂ Paste clipboard")], [KeyboardButton(
                        "📄 List process")], [KeyboardButton("💤 Sleep")],
-                   [KeyboardButton("💡 More Commands")]]
+                   [KeyboardButton("💡 More commands")]]
         context.bot.send_message(
             chat_id=self.CHAT_ID, text="I will do what you command.", reply_markup=ReplyKeyboardMarkup(buttons))
 
@@ -133,9 +133,10 @@ class telegramBOT:
                 return ''
 
     def send_response(self, update, context):
-        user_message = str(update.message.text).lower()
+        user_message = update.message.text
         user_message = user_message.encode(
             'ascii', 'ignore').decode('ascii').strip(' ')
+        user_message = user_message[0].lower() + user_message[1:]
         response = self.handle_message(update, user_message)
         if response:
             if (len(response) > 4096):
