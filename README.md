@@ -1,5 +1,5 @@
 # Telegram-Remote-Desktop
-This program is used to remotly control your PC from your Telegram app. <b> Please use this responsibly </b>.
+This program is used to remotely control your PC from your Telegram app. <b> Please use this responsibly </b>.
 <p align="center">
   <img src="https://github.com/Ahmed-Z/Telegram-Remote-Desktop/blob/master/telegram-final-product.png" style="height:600px;" >
 </p>
