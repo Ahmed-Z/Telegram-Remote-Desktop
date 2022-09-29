@@ -11,7 +11,7 @@ import subprocess
 import json
 
 
-class telegramBOT:
+class TelegramBot:
 
     def __init__(self):
         f = open('auth.json')
@@ -39,6 +39,7 @@ class telegramBOT:
 
     def handle_message(self, update, input_text):
         usr_msg = input_text.split()
+
         if input_text == "more commands":
             return """url <link>: open a link on the browser\nkill <proc>: terminate process\ncmd <command>: execute shell command\ncd <dir>: change directory\ndownload <file>: download a file"""
 
@@ -157,5 +158,5 @@ class telegramBOT:
         updater.idle()
 
 
-bot = telegramBOT()
+bot = TelegramBot()
 bot.start_bot()
