@@ -19,7 +19,7 @@ This program is used to remotely control your PC from your Telegram app. <b> Ple
 * Put computer in sleep mode.
 
 # Installation
-This program in meant to be running on the PC you want to control remotly.
+This program in meant to be running on the PC you want to control remotely.
 
 `git clone https://github.com/Ahmed-Z/Telegram-Remote-Desktop`<br>
 `cd Telegram-Remote-Desktop` <br><br>
