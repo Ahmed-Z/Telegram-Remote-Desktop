@@ -27,7 +27,10 @@ After downloading you have to install dependencies:<br>
 `pip3 install -r requirements.txt`
 
 <h3>Configuration</h3>
-You need to create a bot via BotFather using the Telegram app to get the access token and the chat id.
+
+You need to create a bot via BotFather using the Telegram app to get the access token and the chat id.<br>
+
+You need to create `auth.js` file containing your access token and the chat id.
 
 ```
 {
