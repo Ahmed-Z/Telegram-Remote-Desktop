@@ -137,6 +137,8 @@ class TelegramBot:
         user_message = update.message.text
         # Please modify this
         if update.message.chat["username"] != "YOUR_USERNAME":
+            print("[!] " + update.message.chat["username"] +
+                  ' tried to use this bot')
             context.bot.send_message(
                 chat_id=self.CHAT_ID, text="Nothing to see here.")
         else:
