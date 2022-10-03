@@ -38,3 +38,6 @@ You need to create `auth.js` file containing your access token and the chat id.
     "CHAT_ID": YOUR CHAT ID
 }
 ```
+**IMPORTANT** | for security reasons you need to insert your telegram username in `telegram-remote-desktop.py` in the line: <br>
+`if update.message.chat["username"] != "YOUR_USERNAME":` <br>
+Only the the account of the specified username is able to use the bot.
