@@ -135,17 +135,22 @@ class TelegramBot:
 
     def send_response(self, update, context):
         user_message = update.message.text
-        user_message = user_message.encode(
-            'ascii', 'ignore').decode('ascii').strip(' ')
-        user_message = user_message[0].lower() + user_message[1:]
-        response = self.handle_message(update, user_message)
-        if response:
-            if (len(response) > 4096):
-                for i in range(0, len(response), 4096):
+        if update.message.chat["username"] != "YOUR_USERNAME":
+            context.bot.send_message(
+                chat_id=self.CHAT_ID, text="Nothing to see here.")
+        else:
+            user_message = user_message.encode(
+                'ascii', 'ignore').decode('ascii').strip(' ')
+            user_message = user_message[0].lower() + user_message[1:]
+            response = self.handle_message(update, user_message)
+            if response:
+                if (len(response) > 4096):
+                    for i in range(0, len(response), 4096):
+                        context.bot.send_message(
+                            chat_id=self.CHAT_ID, text=response[i:4096+i])
+                else:
                     context.bot.send_message(
-                        chat_id=self.CHAT_ID, text=response[i:4096+i])
-            else:
-                context.bot.send_message(chat_id=self.CHAT_ID, text=response)
+                        chat_id=self.CHAT_ID, text=response)
 
     def start_bot(self):
         updater = Updater(self.TOKEN, use_context=True)
