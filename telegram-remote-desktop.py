@@ -135,6 +135,7 @@ class TelegramBot:
 
     def send_response(self, update, context):
         user_message = update.message.text
+        # Please modify this
         if update.message.chat["username"] != "YOUR_USERNAME":
             context.bot.send_message(
                 chat_id=self.CHAT_ID, text="Nothing to see here.")
