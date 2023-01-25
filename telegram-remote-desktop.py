@@ -46,7 +46,7 @@ class TelegramBot:
         usr_msg = input_text.split()
 
         if input_text == "more commands":
-            return """url <link>: open a link on the browser\nkill <proc>: terminate process\ncmd <command>: execute shell command\ncd <dir>: change directory\ndownload <file>: download a file"""
+            return """url <link>: open a link on the browser\nkill <proc>: terminate process\ncmd <command>: execute shell command\nls: show elements in the current directory\ncd <dir>: change directory\ndownload <file>: download a file"""
 
         if input_text == "screen status":
             for proc in psutil.process_iter():
