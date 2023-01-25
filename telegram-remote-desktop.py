@@ -9,6 +9,7 @@ import webbrowser
 import pyperclip
 import subprocess
 import json
+import platform
 
 
 class TelegramBot:
@@ -18,6 +19,10 @@ class TelegramBot:
         auth = json.load(f)
         self.TOKEN = auth["TOKEN"]
         self.CHAT_ID = auth["CHAT_ID"]
+
+    def os_type(self):
+        os_system = platform.system()
+        return os_system
 
     def start_command(self, update, context):
         buttons = [[KeyboardButton("⚠ Screen status")], [KeyboardButton("🔒 Lock screen")], [KeyboardButton("📸 Take screenshot")],
@@ -37,21 +42,27 @@ class TelegramBot:
             sct.shot(mon=-1)
         return os.path.join(TEMPDIR, 'monitor-0.png')
 
-    def handle_message(self, update, input_text):
+    def handle_message(self, update, input_text, os_system):
         usr_msg = input_text.split()
 
         if input_text == "more commands":
             return """url <link>: open a link on the browser\nkill <proc>: terminate process\ncmd <command>: execute shell command\ncd <dir>: change directory\ndownload <file>: download a file"""
 
-        if input_text == 'screen status':
+        if input_text == "screen status":
             for proc in psutil.process_iter():
                 if (proc.name() == "LogonUI.exe"):
                     return 'Screen is Locked'
             return 'Screen is Unlocked'
 
-        if input_text == 'lock screen':
+        if input_text == "lock screen":
             try:
-                ctypes.windll.user32.LockWorkStation()
+                if os_system == "Darwin":
+                    if subprocess.call('ls', shell = True):
+                        subprocess.call('/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend', shell=True)
+                elif os_system == "Windows":
+                    ctypes.windll.user32.LockWorkStation()
+                elif os_system == "Linux":
+                    os.popen('gnome-screensaver-command --lock')
                 return "Screen locked successfully"
             except:
                 return "Error while locking screen"
@@ -66,10 +77,13 @@ class TelegramBot:
 
         if input_text == "sleep":
             try:
-                os.system("rundll32.exe powrprof.dll,SetSuspendState 0,1,0")
-                return "Windows was put to sleep"
+                if os_system == "Darwin":
+                    subprocess.Popen('caffeinate')
+                if os_system == "Windows":
+                    os.system("rundll32.exe powrprof.dll,SetSuspendState 0,1,0")
+                return "Your PC was put to sleep"
             except:
-                return "Cannot put Windows to sleep"
+                return "Cannot put your PC to sleep"
 
         if input_text == "list process":
             try:
@@ -82,7 +96,7 @@ class TelegramBot:
                 pass
             return processes
 
-        if usr_msg[0] == 'kill':
+        if usr_msg[0] == "kill":
             proc_list = []
             for proc in psutil.process_iter():
                 p = proc_list.append([proc.name(), str(proc.pid)])
@@ -94,12 +108,21 @@ class TelegramBot:
             except:
                 return 'Error occured while killing the process'
 
-        if usr_msg[0] == 'url':
+        if usr_msg[0] == "url":
             try:
                 webbrowser.open(usr_msg[1])
                 return 'Link opened successfully'
             except:
                 return 'Error occured while opening link'
+
+        if usr_msg[0] == "ls" or usr_msg[0] == "dir":
+            try:
+                os.listdir()
+            except:
+                return 'No elements in the current directory'
+            filenames = os.listdir()
+            if filenames:
+                return filenames
 
         if usr_msg[0] == "cd":
             if usr_msg[1]:
