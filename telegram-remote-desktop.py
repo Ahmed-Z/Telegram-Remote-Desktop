@@ -20,14 +20,10 @@ class TelegramBot:
         self.TOKEN = auth["TOKEN"]
         self.CHAT_ID = auth["CHAT_ID"]
 
-    def os_type(self):
-        os_system = platform.system()
-        return os_system
 
     def start_command(self, update, context):
         buttons = [[KeyboardButton("⚠ Screen status")], [KeyboardButton("🔒 Lock screen")], [KeyboardButton("📸 Take screenshot")],
-                   [KeyboardButton("✂ Paste clipboard")], [KeyboardButton(
-                       "📄 List process")], [KeyboardButton("💤 Sleep")],
+                   [KeyboardButton("✂ Paste clipboard")], [KeyboardButton("📄 List process")], [KeyboardButton("💤 Sleep")],
                    [KeyboardButton("💡 More commands")]]
         context.bot.send_message(
             chat_id=self.CHAT_ID, text="I will do what you command.", reply_markup=ReplyKeyboardMarkup(buttons))
@@ -42,11 +38,11 @@ class TelegramBot:
             sct.shot(mon=-1)
         return os.path.join(TEMPDIR, 'monitor-0.png')
 
-    def handle_message(self, update, input_text, os_system):
+    def handle_message(self, update, input_text):
         usr_msg = input_text.split()
 
         if input_text == "more commands":
-            return """url <link>: open a link on the browser\nkill <proc>: terminate process\ncmd <command>: execute shell command\nls: show elements in the current directory\ncd <dir>: change directory\ndownload <file>: download a file"""
+            return """url <link>: open a link on the browser\nkill <proc>: terminate process\ncmd <command>: execute shell command\nls or dir: show elements in the current directory\ncd <dir>: change directory\ndownload <file>: download a file"""
 
         if input_text == "screen status":
             for proc in psutil.process_iter():
@@ -56,12 +52,11 @@ class TelegramBot:
 
         if input_text == "lock screen":
             try:
-                if os_system == "Darwin":
-                    if subprocess.call('ls', shell = True):
-                        subprocess.call('/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend', shell=True)
-                elif os_system == "Windows":
+                if platform.system() == "Darwin":
+                    subprocess.call('pmset sleepnow', shell=True)
+                elif platform.system() == "Windows":
                     ctypes.windll.user32.LockWorkStation()
-                elif os_system == "Linux":
+                elif platform.system() == "Linux":
                     os.popen('gnome-screensaver-command --lock')
                 return "Screen locked successfully"
             except:
@@ -77,10 +72,10 @@ class TelegramBot:
 
         if input_text == "sleep":
             try:
-                if os_system == "Darwin":
+                if platform.system() == "Windows":
+                    os.system('rundll32.exe powrprof.dll,SetSuspendState 0,1,0')
+                elif platform.system() == "Darwin":
                     subprocess.Popen('caffeinate')
-                if os_system == "Windows":
-                    os.system("rundll32.exe powrprof.dll,SetSuspendState 0,1,0")
                 return "Your PC was put to sleep"
             except:
                 return "Cannot put your PC to sleep"
@@ -114,8 +109,8 @@ class TelegramBot:
                 return 'Link opened successfully'
             except:
                 return 'Error occured while opening link'
-
-        if usr_msg[0] == "ls" or usr_msg[0] == "dir":
+            
+        if usr_msg[0].lower() == 'ls' or usr_msg[0] == 'dir':
             try:
                 os.listdir()
             except:
@@ -124,7 +119,7 @@ class TelegramBot:
             if filenames:
                 return filenames
 
-        if usr_msg[0] == "cd":
+        if usr_msg[0].lower() == "cd":
             if usr_msg[1]:
                 try:
                     os.chdir(usr_msg[1])
@@ -134,7 +129,7 @@ class TelegramBot:
                 if res:
                     return res
 
-        if usr_msg[0] == "download":
+        if usr_msg[0] == 'download':
             if usr_msg[1]:
                 if os.path.exists(usr_msg[1]):
                     try:
@@ -142,7 +137,7 @@ class TelegramBot:
                         update.message.bot.send_document(
                             self.CHAT_ID, document)
                     except:
-                        return "Something went wrong !"
+                        return "Something went wrong!"
 
         if usr_msg[0] == "cmd":
             res = subprocess.Popen(
@@ -156,12 +151,16 @@ class TelegramBot:
             else:
                 return ''
 
+        if usr_msg[0] == "clear":
+            return 'Can\'t clear'
+            # f = open('auth.json')
+            # auth = json.load(f)
+
     def send_response(self, update, context):
         user_message = update.message.text
-        # Please modify this
-        if update.message.chat["username"] != "YOUR_USERNAME":
-            print("[!] " + update.message.chat["username"] +
-                  ' tried to use this bot')
+        #! Please modify this
+        if update.message.chat["username"] != "massimonebossetti":
+            print("[!] " + update.message.chat["username"] + ' tried to use this bot')
             context.bot.send_message(
                 chat_id=self.CHAT_ID, text="Nothing to see here.")
         else:
